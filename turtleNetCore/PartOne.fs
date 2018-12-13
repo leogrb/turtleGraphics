@@ -80,4 +80,4 @@ module PartOne =
         module Examples = 
         
             let test1 = """Forward(30.0); Left(90.0); Forward(30.0); Left(90.0); 
-    Forward(30.0); Left(90.0); f Forward(30.0);"""
+    Forward(30.0); Left(90.0); Forward(30.0);"""
