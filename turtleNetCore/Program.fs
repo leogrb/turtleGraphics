@@ -22,9 +22,12 @@ let render (control : GameWindow) (args : FrameEventArgs) =
     GL.Begin(PrimitiveType.LineStrip);
 
     let exampleProgram,desiredStart = PartOne.Examples.spiral
-    let points = PartOne.runTurtleProgram desiredStart exampleProgram
+    // Test programm parser
+    let programTestParser = Parser.Examples.programParserResult (Parser.parseProgram Parser.Examples.testStairs)
+    let desiredStart = (50.0, 50.0)
+    let points = PartOne.runTurtleProgram desiredStart programTestParser
 
-    GL.Color3(1.0f, 1.0f, 1.0f)
+    GL.Color3(1.0f, 1.0f, 1.0f) 
     for (x,y) in points do
         GL.Vertex2(x,y);
 

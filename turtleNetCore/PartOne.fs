@@ -59,7 +59,7 @@ module PartOne =
         List.fold interpretCommand s commands
 
     module Examples =
-    
+
         let quad = 
             let program =
                 [ Forward 30.0; Left 90.0; Forward 30.0; Left 90.0; 
@@ -88,7 +88,54 @@ module PartOne =
                 ]
             program, (50.0,50.0)
 
+
     let runTurtleProgram startPos (p : Program) : list<Vec2> =
         let initialState = { direction = 0.0; position = startPos; trail = [startPos] }
         let resultState = interpretTurtleProgram initialState p
         resultState.trail |> List.rev
+
+module Parser =
+
+        open FParsec
+
+        let pOpenParens = pchar '('
+        
+        let pCloseParens = pchar ')'
+
+        let pFloatBetweenParens = between pOpenParens pCloseParens pfloat
+
+        let pForward : Parser<Cmd,unit> = 
+            //skipString "Forward" >>= (fun a -> skipString "(") >>. pfloat .>> pstring ")" .>> skipChar ';' >>= (fun a -> preturn (Forward a))
+            skipString "Forward" >>. pFloatBetweenParens >>= (fun a -> preturn (Forward a))
+      
+        let pRight : Parser<Cmd,unit> = 
+            skipString "Right" >>. pFloatBetweenParens >>= (fun a -> preturn (Right a))
+
+        let pLeft : Parser<Cmd,unit> = 
+            skipString "Left" >>. pFloatBetweenParens >>= (fun a -> preturn (Left a))
+
+        let pCmd : Parser<Cmd,unit> =
+            choice [
+                pForward
+                pLeft
+                pRight
+            ]
+
+        let pProgram : Parser<Program,unit> =
+            manyTill (pCmd .>> skipChar ';' .>> spaces) eof
+
+        let parseProgram (s : string) : ParserResult<Program,unit> =
+            run pProgram s 
+
+        module Examples = 
+
+            let programParserResult (p : ParserResult<Program,unit>) =
+                match p with
+                | Success(result, _, _) -> result
+                | Failure(errorMsg, _, _) -> []
+
+            let testStairs = """Forward(10.0); Left(10.0); Right(10.0); Left(10.0);
+                Right(10.0); Left(10.0); Right(10.0);"""
+
+            let test1 = """Forward(30.0); Left(90.0); Forward(30.0); Left(90.0); 
+    Forward(30.0); Left(90.0); Forward(30.0);"""    
