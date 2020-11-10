@@ -21,7 +21,7 @@ let render (control : GameWindow) (args : FrameEventArgs) =
 
     GL.Begin(PrimitiveType.LineStrip);
 
-    let exampleProgram,desiredStart = PartOne.Examples.quad
+    let exampleProgram,desiredStart = PartOne.Examples.spiral
     let points = PartOne.runTurtleProgram desiredStart exampleProgram
 
     GL.Color3(1.0f, 1.0f, 1.0f)

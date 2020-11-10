@@ -27,15 +27,14 @@ module PartOne =
             trail    : list<Vec2> // points produced so far
         }
 
-
- // compute new position out of direction, position and moving value
+ // compute new position out of state and moving value
     let computeForwardMove (s : TurtleState) (f : Value) =
         let d = s.direction
         let p = s.position
         let x = fst p
         let y = snd p
         let rad = d * (Math.PI / float 180)
-        let pNew = (x + ((sin rad) * f), y + ((cos rad) * f))
+        let pNew = (x + ((cos rad) * f), y + ((sin rad) * f))
         let trailNew = s.trail @ [pNew]
         {s with position = pNew; trail = trailNew}
 
@@ -56,7 +55,6 @@ module PartOne =
         | Right v -> 
             computeRightMove s v
 
-
     let interpretTurtleProgram (s : TurtleState) (commands : Program) =
         List.fold interpretCommand s commands
 
@@ -68,45 +66,29 @@ module PartOne =
                   Forward 30.0; Left 90.0; Forward 30.0 ]
             program, (50.0,50.0)
 
+        let quad2 = 
+            let program =
+                [ Forward 10.0; Left 10.0; Right 10.0; Left 10.0;
+                  Right 10.0; Left 10.0; Left 10.0;Left 10.0;
+                  Right 10.0; Left 10.0; Right 10.0; Left 10.0;]
+            program, (50.0,50.0)
+
+        let square = 
+            let program =
+                [ Forward 10.0; Left 10.0; Left 10.0; Left 10.0; 
+                   ]
+            program, (50.0,50.0)
+
         let spiral =
             let program =
                 [
-                    for lineLen in [100.0 .. (-2.00) .. 0.0] do
+                    for lineLen in [20.0 .. (-2.00) .. 0.0] do
                         yield Forward lineLen
-                        yield Left 90.0
+                        yield Left 2.0
                 ]
-            program, (0.0,0.0)
+            program, (50.0,50.0)
 
     let runTurtleProgram startPos (p : Program) : list<Vec2> =
-        let initialState = { direction = 90.0; position = startPos; trail = [startPos] }
+        let initialState = { direction = 0.0; position = startPos; trail = [startPos] }
         let resultState = interpretTurtleProgram initialState p
         resultState.trail |> List.rev
-
-
-    module Parser =
-
-        open FParsec
-
-        let pForward : Parser<Cmd,unit> = 
-            failwith "TODO"
-        
-        let pRight : Parser<Cmd,unit> = 
-            failwith "TODO"
-
-        let pLeft : Parser<Cmd,unit> = 
-            failwith "TODO"
-
-        let pCmd : Parser<Cmd,unit> =
-            failwith "TODO"
-
-        let pProgram : Parser<Program,unit> =
-            failwith "TODO"
-
-        let parseProgram (s : string) : ParserResult<Program,unit> =
-            run pProgram s 
-
-
-        module Examples = 
-        
-            let test1 = """Forward(30.0); Left(90.0); Forward(30.0); Left(90.0); 
-    Forward(30.0); Left(90.0); Forward(30.0);"""
