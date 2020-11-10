@@ -5,9 +5,9 @@
 namespace Turtle
 #endif
 
-
 [<AutoOpen>]
 module PartOne =
+    open System
     type Value = float
 
     type Cmd =
@@ -27,9 +27,38 @@ module PartOne =
             trail    : list<Vec2> // points produced so far
         }
 
-    let interpretTurtleProgram (s : TurtleState) (commands : Program) =
-        failwith "TODO"
 
+ // compute new position out of direction, position and moving value
+    let computeForwardMove (s : TurtleState) (f : Value) =
+        let d = s.direction
+        let p = s.position
+        let x = fst p
+        let y = snd p
+        let rad = d * (Math.PI / float 180)
+        let pNew = (x + ((sin rad) * f), y + ((cos rad) * f))
+        let trailNew = s.trail @ [pNew]
+        {s with position = pNew; trail = trailNew}
+
+    let computeLeftMove (s : TurtleState) (f : Value) =
+        let dNew = (s.direction + float 90) % float 360
+        computeForwardMove {s with direction = dNew} f
+
+    let computeRightMove (s : TurtleState) (f : Value) =
+        let dNew = (s.direction - float 90) % float 360
+        computeForwardMove {s with direction = dNew} f
+
+    let interpretCommand (s : TurtleState) (cmd : Cmd) =
+        match cmd with
+        | Forward v -> 
+            computeForwardMove s v
+        | Left v -> 
+            computeLeftMove s v
+        | Right v -> 
+            computeRightMove s v
+
+
+    let interpretTurtleProgram (s : TurtleState) (commands : Program) =
+        List.fold interpretCommand s commands
 
     module Examples =
     
