@@ -1,4 +1,6 @@
-﻿#if INTERACTIVE
+﻿// BIF5 FUS - Final Project - PartOne
+// by Leo Gruber (if18b113)
+#if INTERACTIVE
 #r "../packages/FParsec/lib/net40-client/FParsecCS.dll"
 #r "../packages/FParsec/lib/net40-client/FParsec.dll"
 #else
@@ -28,7 +30,7 @@ module PartOne =
         }
 
  // compute new position out of state and moving value
- // assumption: 0/360 degrees -> North, 90 degrees -> East 
+ // assumption: 0/360 degrees -> North, 90 degrees -> East, 180 degrees -> South, 270 degrees -> West
     let computeForwardMove (s : TurtleState) (f : Value) =
         let d = s.direction
         let p = s.position
@@ -106,7 +108,6 @@ module Parser =
         let pFloatBetweenParens = between pOpenParens pCloseParens pfloat
 
         let pForward : Parser<Cmd,unit> = 
-            //skipString "Forward" >>= (fun a -> skipString "(") >>. pfloat .>> pstring ")" .>> skipChar ';' >>= (fun a -> preturn (Forward a))
             skipString "Forward" >>. pFloatBetweenParens >>= (fun a -> preturn (Forward a))
       
         let pRight : Parser<Cmd,unit> = 
@@ -139,4 +140,4 @@ module Parser =
                 Right(10.0); Left(10.0); Right(10.0);"""
 
             let test1 = """Forward(30.0); Left(90.0); Forward(30.0); Left(90.0); 
-    Forward(30.0); Left(90.0); Forward(30.0);"""    
+                Forward(30.0); Left(90.0); Forward(30.0);"""    

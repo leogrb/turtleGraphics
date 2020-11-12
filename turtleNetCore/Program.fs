@@ -21,11 +21,17 @@ let render (control : GameWindow) (args : FrameEventArgs) =
 
     GL.Begin(PrimitiveType.LineStrip);
 
+
+    // Test program without parser
     let exampleProgram,desiredStart = PartOne.Examples.spiral
-    // Test programm parser
+    let points = PartOne.runTurtleProgram desiredStart exampleProgram
+
+
+    (* Test program with parser
     let programTestParser = Parser.Examples.programParserResult (Parser.parseProgram Parser.Examples.testStairs)
     let desiredStart = (50.0, 50.0)
-    let points = PartOne.runTurtleProgram desiredStart programTestParser
+    let points = PartOne.runTurtleProgram desiredStart programTestParser*)
+
 
     GL.Color3(1.0f, 1.0f, 1.0f) 
     for (x,y) in points do
