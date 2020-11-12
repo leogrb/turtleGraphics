@@ -28,22 +28,23 @@ module PartOne =
         }
 
  // compute new position out of state and moving value
+ // assumption: 0/360 degrees -> North, 90 degrees -> East 
     let computeForwardMove (s : TurtleState) (f : Value) =
         let d = s.direction
         let p = s.position
         let x = fst p
         let y = snd p
         let rad = d * (Math.PI / float 180)
-        let pNew = (x + ((cos rad) * f), y + ((sin rad) * f))
+        let pNew = (x + ((sin rad) * f), y + ((cos rad) * f))
         let trailNew = s.trail @ [pNew]
         {s with position = pNew; trail = trailNew}
 
     let computeLeftMove (s : TurtleState) (f : Value) =
-        let dNew = (s.direction + float 90) % float 360
+        let dNew = (s.direction + float 270) % float 360
         computeForwardMove {s with direction = dNew} f
 
     let computeRightMove (s : TurtleState) (f : Value) =
-        let dNew = (s.direction - float 90) % float 360
+        let dNew = (s.direction + float 90) % float 360
         computeForwardMove {s with direction = dNew} f
 
     let interpretCommand (s : TurtleState) (cmd : Cmd) =
